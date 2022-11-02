@@ -7,6 +7,15 @@ terraform {
   }
 }
 
+terraform {
+  backend "s3" {
+    bucket         = "terraform-remote-state-sz21"
+    key            = "terraform.tfstate"
+    region         = "us-east-2"
+    dynamodb_table = "terraform-remote-state"
+  }
+}
+
 # Configure the AWS Provider
 provider "aws" {
   region = "us-east-2"
