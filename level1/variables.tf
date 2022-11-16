@@ -8,4 +8,3 @@ variable "private_cidr" {}
 
 variable "public_cidr" {}
 
-variable "availability_zone" {}
