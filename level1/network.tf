@@ -7,32 +7,34 @@ resource "aws_vpc" "main" {
   }
 }
 
-
 # Create subnets
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_subnet" "public" {
   count = length(var.public_cidr)
 
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.public_cidr[count.index]
+  vpc_id            = aws_vpc.main.id
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+  cidr_block        = var.public_cidr[count.index]
 
   tags = {
     Name = "${var.env_code}-public${count.index}"
   }
 }
 
-
-
 resource "aws_subnet" "private" {
   count = length(var.private_cidr)
 
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.private_cidr[count.index]
+  vpc_id            = aws_vpc.main.id
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+  cidr_block        = var.private_cidr[count.index]
 
   tags = {
     Name = "${var.env_code}-private${count.index}"
   }
 }
-
 
 # Create internet gateway
 resource "aws_internet_gateway" "main" {
@@ -53,7 +55,6 @@ resource "aws_eip" "nat" {
     Name = "${var.env_code}-nat${count.index}"
   }
 }
-
 
 # Create NAT gateway
 resource "aws_nat_gateway" "main" {
@@ -96,8 +97,6 @@ resource "aws_route_table" "private" {
   }
 }
 
-
-
 # Create route table associations
 resource "aws_route_table_association" "public" {
   count = length(var.public_cidr)
@@ -105,8 +104,6 @@ resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
-
-
 
 resource "aws_route_table_association" "private" {
   count = length(var.private_cidr)
