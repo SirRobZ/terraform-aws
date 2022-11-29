@@ -5,6 +5,7 @@ resource "aws_launch_configuration" "main" {
  security_groups = [aws_security_group.private.id]
  user_data       = file("user-data.sh")
  key_name        = "main"
+ iam_instance_profile = aws_iam_instance_profile.main.name
 }
 
 resource "aws_autoscaling_group" "main" {
@@ -23,4 +24,3 @@ resource "aws_autoscaling_group" "main" {
     propagate_at_launch = true
  }
 }
-
