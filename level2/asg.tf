@@ -24,4 +24,3 @@ resource "aws_autoscaling_group" "main" {
     propagate_at_launch = true
  }
 }
-
